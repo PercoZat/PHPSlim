@@ -1,0 +1,13 @@
+{
+    "name": "perco/php-slim0",
+    "description": "Projet Micro Framworks Slim3",
+    "authors": [
+        {
+            "name": "Pierre CROZAT",
+            "email": "perco.crozat@gmail.com"
+        }
+    ],
+    "require": {
+        "slim/slim": "^3.12"
+    }
+}
