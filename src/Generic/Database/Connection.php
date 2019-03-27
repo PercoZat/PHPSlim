@@ -39,5 +39,4 @@ class Connection
         $statement->execute();
         return $statement->fetchAll();
     }
-
 }

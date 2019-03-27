@@ -8,25 +8,25 @@ use Generic\Database\Connection;
 use Psr\Container\ContainerInterface;
 use Slim\App;
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-
-//______________________________________________________________________________________________________________________Configuration pour afficher les erreurs de Slim
+require_once dirname(__DIR__).'/vendor/autoload.php';
+//Démarrage de l'application
+//Configuration pour afficher les erreurs de Slim
 $config = [
     'settings' => [
         'displayErrorDetails' => true
     ]
 ];
-//______________________________________________________________________________________________________________________CONNECTION BDD
-$bdd = new Connection('portfolio_projet','root', '');
-//______________________________________________________________________________________________________________________Recup table
+//CONNECTION BDD
+$bdd = new Connection('portfolio_projet', 'root', '');
+//Recup table
 
 $req = $bdd->findTable('listeprojets');
 
 
-//______________________________________________________________________________________________________________________APP
+//APP
 $app = new App($config);
 
-//______________________________________________________________________________________________________________________TWIG Container d'injection de dépendance
+//TWIG Container d'injection de dépendance
 $container = $app->getContainer();
 // Register component on container
 $container['view'] = function (ContainerInterface $container) {
@@ -39,7 +39,7 @@ $container['view'] = function (ContainerInterface $container) {
     $view->addExtension(new Slim\Views\TwigExtension($router, $uri));
     return $view;
 };
-//______________________________________________________________________________________________________________________Boucle pour Container d'injection de dépendance
+//Boucle pour Container d'injection de dépendance
 $tab = [HomeController::class,
         ContactController::class,
         AboutController::class,
@@ -47,19 +47,17 @@ $tab = [HomeController::class,
 ];
 
 foreach ($tab as $key) {
-    $container[$key] = function (ContainerInterface $container)use($key) {
+    $container[$key] = function (ContainerInterface $container) use ($key) {
         return new $key($container->get('view'));
     };
 }
 
-//______________________________________________________________________________________________________________________ROUTE Index
+//ROUTE Index / Contact / About
 $app->get('/', HomeController::class .':home')->setName('Homepage');
-//______________________________________________________________________________________________________________________ROUTE Contact
 $app->get('/contact', ContactController::class .':contact')->setName('Contact');
-//______________________________________________________________________________________________________________________ROUTE About
 $app->get('/about', AboutController::class .':about')->setName('A propos');
 
-//______________________________________________________________________________________________________________________GROUPE de routes /projets
+//GROUPE de routes /projets
 $app->group('/projets', function () {
     $this->get('/{id:\d+}', ProjectController::class . ':show')->setName('app_project_show');
     $this->get('/create', ProjectController::class . ':create')->setName('app_project_create');
